@@ -1,0 +1,25 @@
+# Dogfight scorestreak configuration file
+# Edit the scorestreak settings like how many things to shoot and how many things to make boom
+# in order to get more stuff to shoot and make go boom
+# NOTE: All values must be positive integers
+
+#Increment: How much to increase score by for the following options
+increment:
+  kill: 10
+  
+  # TODO: Decide on keeping the following
+  # The following are a list of ways to lose points
+  # Negative numbers denote LOSING points.
+  # death: -5 #Environmental death, not death during PvP.
+  # friendlyfire: -5 #Kills made in friendly fire
+  
+#Cost: How much it costs (in scorestreak points) to unlock the following weapons:
+cost:
+  squidshot: 20
+  shotgun: 30
+  firebullet: 35
+  sniper: 40
+  mine: 50
+  missile: 60
+  playermissile: 70
+  

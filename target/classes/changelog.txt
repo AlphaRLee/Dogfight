@@ -1,0 +1,211 @@
+==========================================================
+Dogfight Changelog
+  _____
+ / |-| \ 
+|  | |  | <-- Elytra (I'm a programmer with some free time, not a text artist)
+|  | |  |
+ \ | | /
+  \/ \/
+==========================================================
+
+0.8.1
++ Added item targets
+    Shoot them down to get a random item drop!
+    Appears as an ender crystal
+    Has 10 HP (5 full hearts, 10 half-hearts)
+    Plays sound effect on damage and on destruction
++ Added /df spawntarget command
+    Spawns a Dogfight target
+    Requires permission dogfight.spawn.target
+* Changed particle frequency for item hoops from every tick to every 2nd tick
+* Changed temporary floating item related spawn item. Drop clay ball instead of sugar to convert to random floating item now
+
+
+0.8 - He Shoots, He Scores! Update
++ Added teams
+	Players automatically create their own teams set to their own names when they join the test game, unless if they specify a team to join
+	Prevents friendly fire
++ Added scoring system
+    Killing another player with a Dogfight weapon will give you (and your team) +10
+    Dying from anything but a Dogfight weapon (excluding friendly fire) will give you (and your team) -5
+    If anybody gets a score of 50 (or greater), the winner is announced and the scores reset
+    Team scores appear on scoreboard
++ Added /df score command
+	Score-related commands
+	Must be executed by a player who is on a team
+	Requires permission dogfight.score
+	Subcommands:
+    	set <integer value>
+    		Set the score of the team the player is on to the specified value
+    		Requires permission dogfight.score.set
+    	query
+    		Returns the score of the team the player is on	
+		reset
+			Reset the score of the team the player is on to 0
+    		Requires permission dogfight.score.set
+		show
+			Show the Dogfight scoreboard to the player
+			Requires permission dogfight.score.show
+		hide
+			Hide the Dogfight scoreboard to the player
+			Requires permission dogfight.score.hide
++ Added /df team command
+	Team-related commands
+	Requires permission dogfight.team
+	Subcommands:
+		join <team name>
+			Joins the team with the specified team name or display name, not case sensitive
+			Leaves the team the player is currently on if they are on a different team than the one specified
+			Requires permission dogfight.team.join
+		leave
+			Currently does not do anything
+		name [new team name] [new display name]
+			Without any following arguments, reports what the team name is and what the display name is
+			With new team name, sets team to new name. 
+				Name must be unique per game
+			With new display name, sets the team's display name to new display name. 
+				Display Name must be unique per game
+		create <new team name> [new display name]
+			Creates a new team with the specified team name and display name. Follows same rules as /df name
+			Requires permission dogfight.team.create
+		remove <team>
+			Removes the specified team
+			Players on that team are kicked from the game
+			Requires permission dogfight.team.remove
+		list
+			List all teams in this game
+			Requires permission dogfight.team.list
++ Added /df version command
+	Reports which version of Dogfight is installed. Be sure to check back for updates!
++ Added /df autojoin [target name] command
+	Automatically adds the target name to the Dogfight test game on login.
+	Names stored in config.yml (temporary measure)
+	Requires permission dogfight.autojoin.set
++ Added sound effect for squid shot
+* Adjusted bullets and snow bullets to fire in the direction the player is looking
+* Changed minimum slow-down velocity from 0.5 to 0.3
+* Using sneak with gliding no longer makes players go faster than they currently are going
+* Edited help menu (cosmetically)
+
+0.7.1
++ Added debugger for known problems
+    Accessible to console through: df logalert <show type> [alert level]
+    Accessible to players with dogfight.canseealerts by: /df showalert
++ Added prefix [Dogfight] to messages
+* Corrected death messages not disappearing after a set time
+^ Flagged DfProjectile upldate projectile speed for debugging
+
+0.7 - Three Cheers Update
+  Turns out we decided to add a whole lot more things than usual for this update...
+  Three things: new projectiles, new hoop and new unimplemented code (with 3 new, unused yml files...)
++ Added mines
+	Drop an explosive guardian...er...present for one of your followers
+	Obtaining:
+		Right click a regular red dye to convert to mine
+		Users with dogfight.canGive permission: use /df give [username] mine [quantity]
++ Added fire bullet
+	It's just like a regular bullet, but now it's for hotshots.
+	Ignited targets will burn for 3 seconds
+	Obtaining:
+		Right click a regular yellow dye to convert to fire bullet
+		Users with dogfight.canGive permission: use /df give [username] firebullet [quantity]
++ Added squid shot
+	You have no idea how terrifying it is to fly with a squid attached to your face
+	Targets hit by the flying squid are blinded for 5 seconds
+	Obtaining:
+		Right click a regular ink sac to convert to squid shot
+		Users with dogfight.canGive permission: use /df give [username] squidshot [quantity]
++ Added hoops:
+	Giant flying sphere frames that players can fly through...what they do? We're not sure yet, but there's lots of places for them to go
+	Floating dogfight-related items can be found in its current variety
+		Obtaining (temporary):
+			Drop a sugar item and it will randomly change into a dogfight-related item
++ Added death messages:
+	Died because someone shot you down or blew you up with one of our products? We got you covered now
++ Added this lovely page. It's about time we kept track of what's happeing
+	NOTE: While we try hard, this is NOT guaranteed to be a comprehensive guide to everything inside or everything changed
+	This especially applies for all changelog entries created for versions 0.6 and down
++ Added a bunch of new config YAML files, including arenas.yml, config.yml and scorestreak.yml
+	Ignore these for now, we got lots of fun content that will be using these later
+* Shotgun item is now pumpkin seeds instead of an egg, resolving last-shot shotgun issue
+* Changed shotgun sound effect
+* Increased bullet and missile speed. 
+* Decreased hit radius for bullet from 3 to 2.5
+* Recalibrated projectiles to be based on their center position, not their bottoms. 
+	Missiles also now target center of their target, not their feet
+* Resolved updating speed issue
+- TEMPORARILY removed ProtocolLib support. We will be using it in the future, but ProtocolLib doesn't support Spigot 1.12 yet :(
+
+0.6 - Aiming is Too Mainstream Update
++ Added shotgun
+	It's a burst of fun for everyone!
+	Obtaining:
+		Right click a regular prismarine crystals to convert to shotgun
+		Users with dogfight.canGive permission: use /df give [username] shotgun [quantity]
+
+0.5.2
++ "sniper" is now a synonym for "sniperbullet" in the /df give command
+* Fixed fatal missile chase bug. Missiles will no longer attempt to chase targets in different worlds
+* Optimizations on incoming missile warning system
+
+0.5.1
++ Added sound effect to sniper
+* Fixed incoming missile warning system. Previously would not appear
+
+0.5 - The No Scope Update
++ Added sniper
+	The real bang for your buck. One-shots any player down your sights
+	Obtaining:
+		Right click a regular gold nuggets to convert to sniper
+		Users with dogfight.canGive permission: use /df give [username] sniperbullet [quantity]
++ Added incoming missile warning effect
+	When a player is being tracked by a missile, the targeted player will be notified
+		A brief "Incoming Missile Warning!" subtitle will appear
+		A beeping sound can be heard. The frequency of beeps increases as the missile grows closer
+
+0.4.2
+* Missiles now apply explosive damage to entities (not blocks), previously hindered by WorldGuard's other-explosion flag.
+  (WorldGuard is not a required plugin to operate Dogfight)
+* Explosion does not damage item frames or paintings, but directly hitting an item frame or painting with a missile will destroy it  
+
+0.4.1
+* Minor bug fixes
+
+0.4 - The Incoming Update
++ Added missile
+	These missiles have the latest and greatest homing technology that targets the nearest living entity,
+	all to end with everyone's favorite explosions
+	Also comes with playermissile variant, which exclusively will target other players
+	Explosions deal no damage to surrounding blocks
+	Obtaining:
+		Right click a regular sugar to convert to missile. Right click a regular glowstone dust item to convert to player missile
+		Users with dogfight.canGive permission:
+			Use /df give [username] missile [quantity]
+			Use /df give [username] pmissile [quantity]
++ Added force glide setting
+	Users will bounce up and down while gliding whenever they touch the ground.
+	While bouncing, simply boost again to get back airborne
+	Users must be a member of a Dogfight game and have an elytra on their back (with more than minimum durability) to be affected
+	Can be toggled with /df forceglide or /df fg (requires dogfight.cantoggleforceglide permission)
+			
+0.3 - Take it Nice and Slow Update
++ New control: Press and hold the sneak button to slow down
+- Changed control: Boost no longer works by pressing sneak
+
+0.2 - Learn to Shoot Update
+* Fixed critical bug where bullets deal no damage
+
+0.1 - The Big Blue Skies Update
++ Welcome to Dogfight! This is the start of the journey for aerial combat, tailored for the Minecraft experience
+  This project is currently under development and version 0.1 is the very first closed alpha release! Yaaaay!
++ Added boost:
+	While gliding with an elytra, get a continuous boost to your flight
+	Activate by:
+		Sprinting (default to pressing and holding "W" and pressing "ctrl")
+		Sneaking (default to pressing and holding shift key)
++ Added bullet:
+	Fires quick and deadly to deal damage to anybody unlucky enough to be in your wrath
+	Obtaining:
+		Users with dogfight.canGive permission: use /df give [username] bullet [quantity]
+- Removed Herobrine (already)
+		

@@ -1,0 +1,6 @@
+#Dogfight configuration file
+#This is for if you want full control on going pewpewpew and doing loopdy-loops (I think...)
+#To configure arenas, please see arenas.yml
+
+#TODO: Remove this test line
+autojoin:

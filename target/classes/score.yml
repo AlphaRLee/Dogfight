@@ -1,0 +1,15 @@
+# Dogfight score configuration file
+# Edit the score settings to set how much stuff you need to shoot to win
+# NOTE: All values must be INTEGERS
+
+# Increment: How much to increase score by for the following options
+increment:
+  kill: 10
+  # The following are a list of ways to lose points
+  # Negative numbers denote LOSING points.
+  death: -5 #Environmental death, not death during PvP.
+  friendlyfire: -5 #Kills made in friendly fire
+    
+# Maximum: What score you need in order to win the game
+max: 50
+  

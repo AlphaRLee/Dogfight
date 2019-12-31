@@ -1,0 +1,11 @@
+name: Dogfight
+main: io.github.alpharlee.dogfight.Dogfight
+version: 1.0-SNAPSHOT
+api-version: 1.15
+commands:
+  dogfight:
+    description: Main command for Dogfight
+    aliases: [df]
+author: [RLee, Kite7742]
+#depend: [ProtocolLib]
+#^Uncomment depend section once a ProtocolLib version is made that supports Spigot 1.12
