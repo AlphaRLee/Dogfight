@@ -11,7 +11,7 @@
 
     <name>Dogfight</name>
 
-    <description>Dogfight for Minecraft 1.13+, using Spigot</description>
+    <description>Dogfight for Minecraft 1.15+, using Spigot</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
