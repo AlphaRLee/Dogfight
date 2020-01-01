@@ -1,6 +1,6 @@
 package io.github.alpharlee.dogfight.eventlistener;
 
-import io.github.alpharlee.dogfight.CommandHandler;
+import io.github.alpharlee.dogfight.commandhandler.CommandHandler;
 import io.github.alpharlee.dogfight.Dogfight;
 import io.github.alpharlee.dogfight.MetadataTag;
 import io.github.alpharlee.dogfight.floatingentity.FloatingItem;

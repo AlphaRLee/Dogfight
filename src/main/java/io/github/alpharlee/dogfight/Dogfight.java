@@ -1,5 +1,6 @@
 package io.github.alpharlee.dogfight;
 
+import io.github.alpharlee.dogfight.commandhandler.CommandHandler;
 import io.github.alpharlee.dogfight.alert.AlertLevel;
 import io.github.alpharlee.dogfight.alert.ShowAlertType;
 import io.github.alpharlee.dogfight.eventlistener.ListenerManager;
