@@ -50,6 +50,15 @@ public class PlayerRegistry extends Registry {
     }
 
     /**
+     * Returns whether or not the player is in the player registry
+     * @param player
+     * @return
+     */
+    public boolean hasPlayer(Player player) {
+        return players.containsKey(player);
+    }
+
+    /**
      * Add a player to the registry and add them to the specified team, or creates a new team for the player if set to null
      * If the player is already added, the function does nothing and returns false
      *
@@ -82,7 +91,7 @@ public class PlayerRegistry extends Registry {
     }
 
     /**
-     * Remove a player from the registry, and remove them from their teamw
+     * Remove a player from the registry, and remove them from their team
      *
      * @param player
      * @author R Lee
@@ -118,6 +127,7 @@ public class PlayerRegistry extends Registry {
         }
 
         //TODO: Rename this method because of following line?
+        // FIXME: This fails single responsibility. This isn't the job of the setPlayerToTeam
         //Ensure they are registered to game as well
         Dogfight.instance.registerGameToPlayer(player, getGame());
 

@@ -4,6 +4,7 @@ import io.github.alpharlee.dogfight.Dogfight;
 import io.github.alpharlee.dogfight.alert.AlertLevel;
 import io.github.alpharlee.dogfight.alert.ShowAlertType;
 import io.github.alpharlee.dogfight.commandhandler.subcommands.LeaveCommandHandler;
+import io.github.alpharlee.dogfight.commandhandler.subcommands.TeamCommandHandler;
 import io.github.alpharlee.dogfight.game.Game;
 import io.github.alpharlee.dogfight.game.Team;
 import io.github.alpharlee.dogfight.projectile.ProjectileType;
@@ -29,6 +30,7 @@ public class CommandHandler {
     static {
         subcommands = new HashMap<>();
         subcommands.put("leave", new LeaveCommandHandler());
+        subcommands.put("team", new TeamCommandHandler());
     }
 
     /**
@@ -108,35 +110,6 @@ public class CommandHandler {
                     targetTeam = null;
                     break;
 
-                case "leave":
-
-                    if (args.length > 1) {
-                        if (player.hasPermission("dogfight.leave.others")) {
-                            targetPlayer = Dogfight.instance.getServer().getPlayer(args[1]);
-                        } else {
-                            sendError(player, "Sorry, you can't force people to do what you want. Maybe try asking them?");
-                        }
-                    } else {
-                        targetPlayer = player;
-                    }
-
-                    if (targetPlayer != null) {
-                        Dogfight.instance.testGame.getPlayerRegistry().removePlayer(targetPlayer);
-                        sendMessage(targetPlayer, "You have been removed from the dogfight test game");
-
-                        //Send message if player selected a different player
-                        if (!targetPlayer.equals(player)) {
-                            sendMessage(player, "You have removed " + targetPlayer.getDisplayName() + " from the test game");
-                        }
-                    } else {
-                        sendError(player, "I'm sorry, who are you looking for?");
-                    }
-
-                    //Clean aimAtPlayer for following commands
-                    targetPlayer = null;
-
-                    break;
-
                 case "forceglide":
                 case "fg":
 
@@ -199,6 +172,15 @@ public class CommandHandler {
 
                     break;
 
+//                case "team":
+//                    teamCommand(player, cmdArgs(args));
+//                    break;
+
+                case "score":
+                    scoreCommand(player, cmdArgs(args));
+                    break;
+
+                //TODO: Remove test commands or modify them to admin level
                 case "showalert":
                 case "sa":
                     //TODO: Clean up command syntax
@@ -218,15 +200,6 @@ public class CommandHandler {
                         sendMessage(player, "No more dogfight alerts. Ignorance is bliss");
                     }
 
-                    break;
-
-                //TODO: Remove test commands or modify them to admin level
-                case "team":
-                    teamCommand(player, cmdArgs(args));
-                    break;
-
-                case "score":
-                    scoreCommand(player, cmdArgs(args));
                     break;
 /* FIXME Evaluate ItemTarget import code
 			case "spawntarget": case "spawn-target": case "st":
@@ -717,129 +690,130 @@ public class CommandHandler {
         }
     }
 
-    private boolean teamCommand(CommandSender sender, String[] args) {
-        final int subCommandArg = 0;
-        final int teamNameArg = 1;
-
-        Player player;
-
-        if (sender instanceof Player) {
-            player = (Player) sender;
-        } else {
-            //TODO: Handle console (eg. get game)
-            sendError(sender, "Sorry! We're still working on this. For now, play the game as a player before running this command");
-            return true;
-        }
-
-        if (player != null && !player.hasPermission("dogfight.team")) {
-            sendError(sender, "Sorry, teamwork is important, but that doesn't mean you have permission to look here");
-            return true;
-        }
-
-        //TODO: Refine this assumption with error checking
-        Game game = Dogfight.instance.getGame(player);
-
-        //TODO: Demand game input as parameter
-        if (game == null) {
-            game = Dogfight.instance.testGame;
-        }
-
-        if (args.length > subCommandArg) {
-            if (game != null) {
-                switch (args[subCommandArg].toLowerCase()) {
-                    case "join":
-
-                        if (args.length > teamNameArg) {
-                            if (player != null && !player.hasPermission("dogfight.team.join")) {
-                                sendError(sender, "Sorry, we can't allow you to join this team. It's becau-CLASSIFIED");
-                                return true;
-                            }
-
-                            joinTeamCommand(player, args[teamNameArg]);
-                        } else {
-                            sendError(sender, "Usage: /df team join <team name>");
-                            return true;
-                        }
-
-                        break;
-
-                    case "leave":
-                        /*
-                         * TODO: fill me in
-                         * Possibilities:
-                         * -Set player to spectator
-                         * -Kick from game
-                         */
-                        sendError(sender, "Surprise! This command...actually does nothing. Try /df leave to leave the game");
-                        break;
-
-                    case "create":
-                        nameTeamCommand(player, cmdArgs(args), true);
-                        break;
-
-                    case "remove":
-
-                        if (args.length > teamNameArg) {
-                            if (player != null && !player.hasPermission("dogfight.team.remove")) {
-                                sendError(sender, "Sorry, but you shouldn't try to end teamwork like this. It would make us sad");
-                                return true;
-                            }
-
-                            Team targetTeam = game.getPlayerRegistry().getTeam(args[teamNameArg]);
-
-                            if (targetTeam != null) {
-                                //Attempt to remove the team
-                                if (game.getPlayerRegistry().removeTeam(targetTeam)) {
-                                    sendMessage(sender, ChatColor.RED + "Team " + targetTeam.getDisplayName() + ChatColor.RED + " has ceased to exist");
-                                } else {
-                                    sendMessage(sender, ChatColor.RED + "That makes life easier for everyone...the team '" + targetTeam.getDisplayName() + ChatColor.RED + "' isn't even in this game");
-                                }
-                            } else {
-                                sendError(sender, "Sorry! We couldn't find any team named '" + args[teamNameArg] + "'. Maybe check your spelling and try again");
-                                return true;
-                            }
-                        } else {
-                            sendError(sender, "Usage: /df team remove <team name>");
-                            return true;
-                        }
-
-                        break;
-
-                    case "list":
-
-                        if (player != null && !player.hasPermission("dogfight.team.list")) {
-                            sendError(sender, "Sorry, how many teams " + ChatColor.ITALIC + " really " + ChatColor.RED + " exists shall remain a mystery");
-                            return true;
-                        }
-
-                        sendMessage(sender, ChatColor.YELLOW + "This Dogfight game has " + game.getPlayerRegistry().getTeams().size() + " teams: ");
-
-                        for (Team listedTeam : game.getPlayerRegistry().getTeams()) {
-                            sendMessage(sender, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
-                                    + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
-                        }
-
-                        break;
-
-                    case "name":
-                        nameTeamCommand(player, cmdArgs(args), false);
-                        break;
-
-                    default:
-                        sendError(sender, "Subcommand '" + args[subCommandArg] + "' not recognized. This teamwork works with one of these options: join, leave, name, create, remove");
-                        return true;
-                }
-            } else {
-                sendError(sender, "Sorry, try joining a game first before you run this command");
-                return true;
-            }
-        } else {
-            sendError(sender, "Usage: /df team <join|leave|name|create|remove> [name]");
-            return true;
-        }
-
-        return true;
-    }
+    // TODO Delete. Refactored into TeamCommandHandler
+//    private boolean teamCommand(CommandSender sender, String[] args) {
+//        final int subCommandArg = 0;
+//        final int teamNameArg = 1;
+//
+//        Player player;
+//
+//        if (sender instanceof Player) {
+//            player = (Player) sender;
+//        } else {
+//            //TODO: Handle console (eg. get game)
+//            sendError(sender, "Sorry! We're still working on this. For now, play the game as a player before running this command");
+//            return true;
+//        }
+//
+//        if (player != null && !player.hasPermission("dogfight.team")) {
+//            sendError(sender, "Sorry, teamwork is important, but that doesn't mean you have permission to look here");
+//            return true;
+//        }
+//
+//        //TODO: Refine this assumption with error checking
+//        Game game = Dogfight.instance.getGame(player);
+//
+//        //TODO: Demand game input as parameter
+//        if (game == null) {
+//            game = Dogfight.instance.testGame;
+//        }
+//
+//        if (args.length > subCommandArg) {
+//            if (game != null) {
+//                switch (args[subCommandArg].toLowerCase()) {
+//                    case "join":
+//
+//                        if (args.length > teamNameArg) {
+//                            if (player != null && !player.hasPermission("dogfight.team.join")) {
+//                                sendError(sender, "Sorry, we can't allow you to join this team. It's becau-CLASSIFIED");
+//                                return true;
+//                            }
+//
+//                            joinTeamCommand(player, args[teamNameArg]);
+//                        } else {
+//                            sendError(sender, "Usage: /df team join <team name>");
+//                            return true;
+//                        }
+//
+//                        break;
+//
+//                    case "leave":
+//                        /*
+//                         * TODO: fill me in
+//                         * Possibilities:
+//                         * -Set player to spectator
+//                         * -Kick from game
+//                         */
+//                        sendError(sender, "Surprise! This command...actually does nothing. Try /df leave to leave the game");
+//                        break;
+//
+//                    case "create":
+//                        nameTeamCommand(player, cmdArgs(args), true);
+//                        break;
+//
+//                    case "remove":
+//
+//                        if (args.length > teamNameArg) {
+//                            if (player != null && !player.hasPermission("dogfight.team.remove")) {
+//                                sendError(sender, "Sorry, but you shouldn't try to end teamwork like this. It would make us sad");
+//                                return true;
+//                            }
+//
+//                            Team targetTeam = game.getPlayerRegistry().getTeam(args[teamNameArg]);
+//
+//                            if (targetTeam != null) {
+//                                //Attempt to remove the team
+//                                if (game.getPlayerRegistry().removeTeam(targetTeam)) {
+//                                    sendMessage(sender, ChatColor.RED + "Team " + targetTeam.getDisplayName() + ChatColor.RED + " has ceased to exist");
+//                                } else {
+//                                    sendMessage(sender, ChatColor.RED + "That makes life easier for everyone...the team '" + targetTeam.getDisplayName() + ChatColor.RED + "' isn't even in this game");
+//                                }
+//                            } else {
+//                                sendError(sender, "Sorry! We couldn't find any team named '" + args[teamNameArg] + "'. Maybe check your spelling and try again");
+//                                return true;
+//                            }
+//                        } else {
+//                            sendError(sender, "Usage: /df team remove <team name>");
+//                            return true;
+//                        }
+//
+//                        break;
+//
+//                    case "list":
+//
+//                        if (player != null && !player.hasPermission("dogfight.team.list")) {
+//                            sendError(sender, "Sorry, how many teams " + ChatColor.ITALIC + " really " + ChatColor.RED + " exists shall remain a mystery");
+//                            return true;
+//                        }
+//
+//                        sendMessage(sender, ChatColor.YELLOW + "This Dogfight game has " + game.getPlayerRegistry().getTeams().size() + " teams: ");
+//
+//                        for (Team listedTeam : game.getPlayerRegistry().getTeams()) {
+//                            sendMessage(sender, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
+//                                    + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
+//                        }
+//
+//                        break;
+//
+//                    case "name":
+//                        nameTeamCommand(player, cmdArgs(args), false);
+//                        break;
+//
+//                    default:
+//                        sendError(sender, "Subcommand '" + args[subCommandArg] + "' not recognized. This teamwork works with one of these options: join, leave, name, create, remove");
+//                        return true;
+//                }
+//            } else {
+//                sendError(sender, "Sorry, try joining a game first before you run this command");
+//                return true;
+//            }
+//        } else {
+//            sendError(sender, "Usage: /df team <join|leave|name|create|remove> [name]");
+//            return true;
+//        }
+//
+//        return true;
+//    }
 
     /**
      * Score command handler
@@ -1046,32 +1020,33 @@ public class CommandHandler {
         return true; //TODO Change out return value
     }
 
-    private void joinTeamCommand(Player player, String teamName) {
-        if (player != null && !player.hasPermission("dogfight.team.join")) {
-            sendError(player, "Sorry, we're excited you want to be part of a team, but you can't use this");
-            return;
-        }
-
-        //TODO: Refine this assumption with error checking
-        Game game = Dogfight.instance.getGame(player);
-        PlayerRegistry playerRegistry = null;
-
-        //TODO: Demand game input as parameter
-        if (game == null) {
-            game = Dogfight.instance.testGame;
-        }
-
-        playerRegistry = game.getPlayerRegistry();
-        Team team = playerRegistry.getTeam(teamName);
-
-        if (team != null) {
-            //Use playerRegistry's method of adding player to team, more comprehensive than newTeam.addMember(player);
-            playerRegistry.setPlayerToTeam(player, team);
-            sendMessage(player, ChatColor.AQUA + "Welcome to the " + ChatColor.RESET + team.getDisplayName() + ChatColor.AQUA + " team");
-        } else {
-            sendError(player, "Sorry! We couldn't find any team named '" + teamName + "'. Maybe check your spelling and try again");
-        }
-    }
+    // TODO Delete. REfactored into TeamCommandHandler
+//    private void joinTeamCommand(Player player, String teamName) {
+//        if (player != null && !player.hasPermission("dogfight.team.join")) {
+//            sendError(player, "Sorry, we're excited you want to be part of a team, but you can't use this");
+//            return;
+//        }
+//
+//        //TODO: Refine this assumption with error checking
+//        Game game = Dogfight.instance.getGame(player);
+//        PlayerRegistry playerRegistry = null;
+//
+//        //TODO: Demand game input as parameter
+//        if (game == null) {
+//            game = Dogfight.instance.testGame;
+//        }
+//
+//        playerRegistry = game.getPlayerRegistry();
+//        Team team = playerRegistry.getTeam(teamName);
+//
+//        if (team != null) {
+//            //Use playerRegistry's method of adding player to team, more comprehensive than newTeam.addMember(player);
+//            playerRegistry.setPlayerToTeam(player, team);
+//            sendMessage(player, ChatColor.AQUA + "Welcome to the " + ChatColor.RESET + team.getDisplayName() + ChatColor.AQUA + " team");
+//        } else {
+//            sendError(player, "Sorry! We couldn't find any team named '" + teamName + "'. Maybe check your spelling and try again");
+//        }
+//    }
 
     private void nameTeamCommand(CommandSender sender, String[] args, boolean createTeam) {
         //TODO: Clean spaghetti code concerning createTeam. Centralize all "createTeam" references to one point)

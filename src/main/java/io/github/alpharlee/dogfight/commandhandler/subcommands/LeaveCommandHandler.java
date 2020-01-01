@@ -2,6 +2,7 @@ package io.github.alpharlee.dogfight.commandhandler.subcommands;
 
 import io.github.alpharlee.dogfight.Dogfight;
 import io.github.alpharlee.dogfight.commandhandler.SubcommandHandler;
+import io.github.alpharlee.dogfight.game.Game;
 import org.bukkit.entity.Player;
 
 import static io.github.alpharlee.dogfight.commandhandler.CommandHandler.sendError;
@@ -12,22 +13,29 @@ public class LeaveCommandHandler implements SubcommandHandler {
         Player targetPlayer = getTargetPlayer(player, args);
 
         if (targetPlayer == null) {
-            sendError(player, "I'm sorry, who are you looking for?");
+            sendError(player, "Sorry, who are you looking for?");
             return false;
         }
 
         // TODO Dynamically select game
-        Dogfight.instance.testGame.getPlayerRegistry().removePlayer(targetPlayer);
+        Game game = Dogfight.instance.testGame;
+        if (!game.getPlayerRegistry().hasPlayer(targetPlayer)) {
+            sendError(player, "It's hard to remove a player that isn't in the game in the first place.");
+            return false;
+        }
+
+        game.getPlayerRegistry().removePlayer(targetPlayer);
         sendMessage(targetPlayer, "You have been removed from the dogfight test game"); // TODO Update this message
 
         //Send message if player selected a different player
         if (!targetPlayer.equals(player)) {
-            sendMessage(player, "You have removed " + targetPlayer.getDisplayName() + " from the test game");
+            sendMessage(player, "You have removed " + targetPlayer.getDisplayName() + " from the test game"); // TODO Update this message
         }
 
         return true;
     }
 
+    // TODO Merge this code into single utility function (old)
     private Player getTargetPlayer(Player player, String[] args) {
         if (args.length > 1) {
             if (player.hasPermission("dogfight.leave.others")) {
