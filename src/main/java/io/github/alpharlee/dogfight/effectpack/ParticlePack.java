@@ -11,21 +11,21 @@ public class ParticlePack {
     private Location location;
     private int timesPlayed;
 
-    public ParticlePack(Particle particle){
+    public ParticlePack(Particle particle) {
         this.particle = particle;
     }
 
-    public ParticlePack(Particle particle, Location location){
+    public ParticlePack(Particle particle, Location location) {
         this.particle = particle;
         this.location = location;
     }
 
-    public ParticlePack(Particle particle, int timesPlayed){
+    public ParticlePack(Particle particle, int timesPlayed) {
         this.particle = particle;
         this.timesPlayed = timesPlayed;
     }
 
-    public ParticlePack(Particle particle, Location location, int timesPlayed){
+    public ParticlePack(Particle particle, Location location, int timesPlayed) {
         this.particle = particle;
         this.location = location;
         this.timesPlayed = timesPlayed;
@@ -58,32 +58,35 @@ public class ParticlePack {
     /**
      * Plays Particle at location (gotten from this#getLocation)
      */
-    public void play(){
-        location.getWorld().spawnParticle(getParticle(),getLocation(),getTimesPlayed());
+    public void play() {
+        location.getWorld().spawnParticle(getParticle(), getLocation(), getTimesPlayed());
     }
 
     /**
      * Plays Particle at location (gotten from this#getLocation) so p can see it
+     *
      * @param p player who can see the Particle
      */
-    public void playForPlayer(Player p){
+    public void playForPlayer(Player p) {
         p.spawnParticle(getParticle(), getLocation(), getTimesPlayed());
     }
 
     /**
      * Plays Particle at location of p
+     *
      * @param p player to spawn Particle at
      */
-    public void playAtPlayer(Player p){
-        location.getWorld().spawnParticle(getParticle(),getLocation(),getTimesPlayed());
+    public void playAtPlayer(Player p) {
+        location.getWorld().spawnParticle(getParticle(), getLocation(), getTimesPlayed());
     }
 
     /**
      * Plays Perticle at location of playedAt so playedFor can see it
+     *
      * @param playedFor player who can see the Particle
-     * @param playedAt player to spawn Particle at
+     * @param playedAt  player to spawn Particle at
      */
-    public void playForPlayerAtPlayer(Player playedFor, Player playedAt){
+    public void playForPlayerAtPlayer(Player playedFor, Player playedAt) {
         playedFor.spawnParticle(getParticle(), playedAt.getLocation(), getTimesPlayed());
     }
 }

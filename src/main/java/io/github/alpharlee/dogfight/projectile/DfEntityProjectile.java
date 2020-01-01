@@ -2,6 +2,12 @@ package io.github.alpharlee.dogfight.projectile;
 
 import io.github.alpharlee.dogfight.MetadataTag;
 import io.github.alpharlee.dogfight.registry.ProjectileRegistry;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.*;
+import org.bukkit.util.Vector;
+
 // FIXME Add appropriate import
 //import com.comphenix.protocol.PacketType;
 //import com.comphenix.protocol.events.PacketAdapter;
@@ -9,16 +15,7 @@ import io.github.alpharlee.dogfight.registry.ProjectileRegistry;
 //import com.comphenix.protocol.events.PacketEvent;
 //import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.entity.*;
-import org.bukkit.util.Vector;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-
-public abstract class DfEntityProjectile extends DfProjectile{
+public abstract class DfEntityProjectile extends DfProjectile {
 
     private Entity boundEntity;
     private EntityType entityType;
@@ -41,14 +38,14 @@ public abstract class DfEntityProjectile extends DfProjectile{
         setup();
     }
 
-    private void setup(){
-    	this.entityType = getEntityType();
-    	setBoundEntity(getProjectileEntity().getWorld().spawnEntity(getProjectileEntity().getLocation(), entityType));
-    
+    private void setup() {
+        this.entityType = getEntityType();
+        setBoundEntity(getProjectileEntity().getWorld().spawnEntity(getProjectileEntity().getLocation(), entityType));
+
         boundEntity.setGravity(false);
         boundEntity.setVelocity(getProjectileEntity().getVelocity()); //Set the direction to be in common with the projectile
-        
-        if(boundEntity instanceof LivingEntity){
+
+        if (boundEntity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) boundEntity;
             livingEntity.setAI(false);
             livingEntity.setCanPickupItems(false);
@@ -56,9 +53,9 @@ public abstract class DfEntityProjectile extends DfProjectile{
             livingEntity.setSilent(true);
         }
         getProjectileEntity().addPassenger(boundEntity);
-        
+
         MetadataTag.PROJECTILE_PASSENGER.setMetadata(boundEntity, this);
-        
+
         //TODO: This code is SUPPOSED to hide the projectile entity, but REQUIRES DEBUGGING
 //        PacketContainer hideProjectileEntity = Dogfight.instance.protocolManager.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
 //        hideProjectileEntity.getIntegerArrays().write(0,new int[projectileEntity.getEntityId()]);
@@ -70,72 +67,62 @@ public abstract class DfEntityProjectile extends DfProjectile{
 //                e.printStackTrace();
 //            }
 //        }
-        
+
         //Drop down to be centered along bound entity
         getProjectileEntity().teleport(getProjectileEntity().getLocation().subtract(0, getBoundEntity().getHeight(), 0));
-        
+
     }
 
-    public Entity getBoundEntity()
-    {
-    	return this.boundEntity;
+    public Entity getBoundEntity() {
+        return this.boundEntity;
     }
 
-    private void setBoundEntity(Entity boundEntity)
-    {
-    	this.boundEntity = boundEntity;
+    private void setBoundEntity(Entity boundEntity) {
+        this.boundEntity = boundEntity;
     }
-    
+
     public abstract EntityType getEntityType();
-    
+
     /**
      * Get the center location between both the projectile and its bound entity
      */
     @Override
-    public Location getCenterLocation()
-    {
-    	double height = getProjectileEntity().getHeight();
- 
-    	//TODO: KLUDGE: Why is the bound entity null in the first place? This check is redundant. 
-    	//Find out why NullPointerException is being thrown and remove if wrapper
-    	if (getBoundEntity() != null)
-    	{
-    		height += getBoundEntity().getHeight();
-    	}
-    	
-    	return getProjectileEntity().getLocation().add(0, height / 2, 0);
+    public Location getCenterLocation() {
+        double height = getProjectileEntity().getHeight();
+
+        //TODO: KLUDGE: Why is the bound entity null in the first place? This check is redundant.
+        //Find out why NullPointerException is being thrown and remove if wrapper
+        if (getBoundEntity() != null) {
+            height += getBoundEntity().getHeight();
+        }
+
+        return getProjectileEntity().getLocation().add(0, height / 2, 0);
     }
-    
+
     @Override
-    protected boolean hit(Entity target, boolean delayRemove)
-    {
-    	if (!(target.equals(getBoundEntity())))
-    	{	
-    		return super.hit(target, delayRemove);
-    	}
-    	else
-    	{
-    		return true; //TODO: Decide on returning true or false
-    	}
+    protected boolean hit(Entity target, boolean delayRemove) {
+        if (!(target.equals(getBoundEntity()))) {
+            return super.hit(target, delayRemove);
+        } else {
+            return true; //TODO: Decide on returning true or false
+        }
     }
-    
+
     /**
      * Remove the projectile if the hosting entity is not alive
      */
     @Override
-    protected void checkForRemoval()
-    {
-    	super.checkForRemoval();
-    	
-    	if (!entityIsAlive())
-    	{
-    		remove(true);
-    	}
+    protected void checkForRemoval() {
+        super.checkForRemoval();
+
+        if (!entityIsAlive()) {
+            remove(true);
+        }
     }
-    
+
     @Override
     public void remove(boolean delay) {
-    	
+
         if (isAlive() || !getProjectileEntity().isDead()) {
             getProjectileEntity().eject();
         }
@@ -144,21 +131,20 @@ public abstract class DfEntityProjectile extends DfProjectile{
             getBoundEntity().remove();
             this.boundEntity = null;
         }
-        
+
         super.remove(delay);
     }
 
-    public boolean entityIsAlive(){
+    public boolean entityIsAlive() {
         return !(this.boundEntity == null || this.boundEntity.isDead());
     }
-    
+
     /**
      * Validate entities that are not the bound entity along with applying {@link DfProjectile#validateNearbyEntity(Entity)}
      * return true if entity is not bound entity and {@link DfProjectile#validateNearbyEntity(Entity)} returns true
      */
     @Override
-    protected boolean validateNearbyEntity(Entity entity)
-    {
-    	return !entity.equals(getBoundEntity()) && super.validateNearbyEntity(entity);
+    protected boolean validateNearbyEntity(Entity entity) {
+        return !entity.equals(getBoundEntity()) && super.validateNearbyEntity(entity);
     }
 }

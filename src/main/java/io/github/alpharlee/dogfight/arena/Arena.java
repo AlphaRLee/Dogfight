@@ -20,7 +20,7 @@ public class Arena {
      */
     private ArrayList<Location> randomSpawnPoints = new ArrayList<>();
 
-    public Arena(World arena){
+    public Arena(World arena) {
         this.arena = arena;
         this.name = arena.getName();
         this.spawnInPoint = arena.getSpawnLocation();
@@ -30,27 +30,27 @@ public class Arena {
         return name;
     }
 
-    public World getWorld(){
+    public World getWorld() {
         return arena;
     }
 
-    public void setSpawnInPoint(Location spawnInPoint){
+    public void setSpawnInPoint(Location spawnInPoint) {
         this.spawnInPoint = spawnInPoint;
     }
 
-    public Location getSpawnInPoint(){
+    public Location getSpawnInPoint() {
         return this.spawnInPoint;
     }
 
-    public void addRandomSpawnpoint(Location spawnPoint){
+    public void addRandomSpawnpoint(Location spawnPoint) {
         this.randomSpawnPoints.add(spawnPoint);
     }
 
-    public ArrayList<Location> getRandomSpawnpoints(){
+    public ArrayList<Location> getRandomSpawnpoints() {
         return this.randomSpawnPoints;
     }
 
-    public Location getRandomSpawnpoint(){
+    public Location getRandomSpawnpoint() {
         return randomSpawnPoints.get(new Random().nextInt(randomSpawnPoints.size()));
     }
 }

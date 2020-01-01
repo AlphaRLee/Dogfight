@@ -15,61 +15,53 @@ import java.util.List;
  * SEVERE is for events that damage usage or content
  * </br>
  * FATAL is for events that trigger an error within Dogfight source code. NOTE: This is not a fool-proof mechanism and primarily is used for weak code or for debugging
- * @author R Lee
  *
+ * @author R Lee
  */
-public enum AlertLevel
-{
-	INFO("Info", "info", "i", "1"),
-	WARNING("Warning!", "warning", "danger", "warn", "w", "2"),
-	SEVERE("Severe!", "severe", "s", "3"),
-	FATAL("FATAL!", "fatal", "f", "4");
-	
-	private String displayName;
-	private List<String> synonyms;
-	
-	private AlertLevel(String displayName, String... altNames)
-	{
-		synonyms = new ArrayList<String>();
-		synonyms.add(displayName);
-		
-		this.displayName = displayName;
-		
-		for (String altName : altNames)
-		{
-			synonyms.add(altName);
-		}
-	}
-	
-	public String getDisplayName()
-	{
-		return displayName;
-	}
-	
-	public List<String> getNames()
-	{
-		return this.synonyms;
-	}
-	
-	/**
-	 * Find the alert type by one of its names
-	 * @param searchName
-	 * @return ShowAlertType with specified name or null if none found
-	 *
-	 * @author R Lee
-	 */
-	public static AlertLevel find(String searchName)
-	{
-		String name = searchName.toLowerCase();
-		
-		for (AlertLevel level : AlertLevel.values())
-		{
-			if (level.getNames().contains(name))
-			{
-				return level;
-			}
-		}
-		
-		return null;
-	}
+public enum AlertLevel {
+    INFO("Info", "info", "i", "1"),
+    WARNING("Warning!", "warning", "danger", "warn", "w", "2"),
+    SEVERE("Severe!", "severe", "s", "3"),
+    FATAL("FATAL!", "fatal", "f", "4");
+
+    private String displayName;
+    private List<String> synonyms;
+
+    private AlertLevel(String displayName, String... altNames) {
+        synonyms = new ArrayList<String>();
+        synonyms.add(displayName);
+
+        this.displayName = displayName;
+
+        for (String altName : altNames) {
+            synonyms.add(altName);
+        }
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public List<String> getNames() {
+        return this.synonyms;
+    }
+
+    /**
+     * Find the alert type by one of its names
+     *
+     * @param searchName
+     * @return ShowAlertType with specified name or null if none found
+     * @author R Lee
+     */
+    public static AlertLevel find(String searchName) {
+        String name = searchName.toLowerCase();
+
+        for (AlertLevel level : AlertLevel.values()) {
+            if (level.getNames().contains(name)) {
+                return level;
+            }
+        }
+
+        return null;
+    }
 }

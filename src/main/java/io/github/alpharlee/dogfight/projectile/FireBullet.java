@@ -1,15 +1,16 @@
 package io.github.alpharlee.dogfight.projectile;
 
+import io.github.alpharlee.dogfight.registry.ProjectileRegistry;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.*;
-
-import io.github.alpharlee.dogfight.registry.ProjectileRegistry;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 
 public class FireBullet extends Bullet {
 
-	private static final int fireTickTime = 60; //3 seconds
-	private static Particle hitParticle = Particle.FLAME;
+    private static final int fireTickTime = 60; //3 seconds
+    private static Particle hitParticle = Particle.FLAME;
 
     /**
      * Same constructor as for a DfProjectile
@@ -23,14 +24,13 @@ public class FireBullet extends Bullet {
     }
 
     @Override
-   	public ProjectileType getType()
-   	{
-   		return ProjectileType.FIRE_BULLET;
-   	}
-    
+    public ProjectileType getType() {
+        return ProjectileType.FIRE_BULLET;
+    }
+
     @Override
     protected void onHit(Entity target) {
-    	super.onHit(target);
+        super.onHit(target);
         target.setFireTicks(fireTickTime);
     }
 }
