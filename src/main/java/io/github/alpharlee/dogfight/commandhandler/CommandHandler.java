@@ -3,6 +3,7 @@ package io.github.alpharlee.dogfight.commandhandler;
 import io.github.alpharlee.dogfight.Dogfight;
 import io.github.alpharlee.dogfight.alert.AlertLevel;
 import io.github.alpharlee.dogfight.alert.ShowAlertType;
+import io.github.alpharlee.dogfight.commandhandler.subcommands.LeaveCommandHandler;
 import io.github.alpharlee.dogfight.game.Game;
 import io.github.alpharlee.dogfight.game.Team;
 import io.github.alpharlee.dogfight.projectile.ProjectileType;
@@ -18,16 +19,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 //import io.github.alpharlee.dogfight.floatingentity.ItemTarget; FIXME evaluate import
 
 public class CommandHandler {
-    public CommandHandler() {
+    private static Map<String, SubcommandHandler> subcommands;
 
+    static {
+        subcommands = new HashMap<>();
+        subcommands.put("leave", new LeaveCommandHandler());
     }
 
     /**
@@ -40,6 +41,28 @@ public class CommandHandler {
      */
     public boolean managePlayerCommand(Player player, String[] args) {
         boolean result = false;
+
+        if (args.length < 1) {
+            sendError(player, "Please type /dogfight help for a list of commands");
+            return false;
+        }
+
+        SubcommandHandler subcommand = subcommands.get(args[0].toLowerCase());
+
+// TODO Restore this concise code block. For now, need to be able to subcommands that aren't refactored yet
+//        if (subcommand == null) {
+//            sendError(player, "Please type /dogfight help for a list of commands");
+//            return false;
+//        }
+//
+//        subcommand.onSubcommand(player, cmdArgs(args));
+
+        // TODO Remove this if statement. See TODO above.
+        if (subcommand != null) {
+            return subcommand.onSubcommand(player, cmdArgs(args));
+        }
+
+        // TODO Refactor everything beneath this to be part o the code above ------------------------------
 
         //TODO: Move to more formal location
         //Target player for operations not centered around sender
