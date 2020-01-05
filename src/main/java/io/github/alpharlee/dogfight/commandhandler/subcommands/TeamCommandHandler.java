@@ -17,10 +17,14 @@ import static io.github.alpharlee.dogfight.commandhandler.CommandHandler.sendErr
 import static io.github.alpharlee.dogfight.commandhandler.CommandHandler.sendMessage;
 
 public class TeamCommandHandler implements SubcommandHandler {
-    private static Map<String, SubcommandHandler> subcommands;
-    static {
+    private Map<String, SubcommandHandler> subcommands;
+    // FIXME Double check: multiple players in different games will be using this same member variable. So far it's fine because this is stateless. Right?
+    private Game game;
+
+    public TeamCommandHandler() {
         subcommands = new HashMap<>();
         subcommands.put("join", new JoinTeamCommandHandler());
+        subcommands.put("list", new ListTeamsCommandHandler());
     }
 
     public boolean onSubcommand(Player player, String[] args) {
@@ -46,7 +50,7 @@ public class TeamCommandHandler implements SubcommandHandler {
             return true;
         }
 
-        Game game = Dogfight.instance.getGame(player);
+        game = Dogfight.instance.getGame(player);
         if (game == null) {
             sendError(player, "Sorry, try joining a game first before you run this command");
             return true;
@@ -130,21 +134,23 @@ public class TeamCommandHandler implements SubcommandHandler {
 
                 break;
 
-            case "list":
+//            case "list":
+//
+//                if (player != null && !player.hasPermission("dogfight.team.list")) {
+//                    sendError(player, "Sorry, how many teams " + ChatColor.ITALIC + " really " + ChatColor.RED + " exists shall remain a mystery");
+//                    return true;
+//                }
+//
+//                int teamCount = game.getPlayerRegistry().getTeams().size();
+//                String teamsWord = teamCount == 1 ? " team:" : " teams:";
+//                sendMessage(player, ChatColor.YELLOW + "This Dogfight game has " + teamCount + teamsWord);
+//
+//                for (Team listedTeam : game.getPlayerRegistry().getTeams()) {
+//                    sendMessage(player, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
+//                            + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
+//                }
 
-                if (player != null && !player.hasPermission("dogfight.team.list")) {
-                    sendError(player, "Sorry, how many teams " + ChatColor.ITALIC + " really " + ChatColor.RED + " exists shall remain a mystery");
-                    return true;
-                }
-
-                sendMessage(player, ChatColor.YELLOW + "This Dogfight game has " + game.getPlayerRegistry().getTeams().size() + " teams: ");
-
-                for (Team listedTeam : game.getPlayerRegistry().getTeams()) {
-                    sendMessage(player, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
-                            + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
-                }
-
-                break;
+//                break;
 
             case "name":
                 nameTeamCommand(player, cmdArgs(args), false);
@@ -230,29 +236,23 @@ public class TeamCommandHandler implements SubcommandHandler {
         }
     }
 
-    // TODO Delete and replace with JoinTeamCommand class
-//    private void joinTeamCommand(Player player, String teamName) {
-//        //TODO: Refine this assumption with error checking
-//        Game game = Dogfight.instance.getGame(player);
-//        PlayerRegistry playerRegistry = null;
-//
-//        //TODO: Demand game input as parameter
-//        if (game == null) {
-//            game = Dogfight.instance.testGame;
-//        }
-//
-//        playerRegistry = game.getPlayerRegistry();
-//        Team team = playerRegistry.getTeam(teamName);
-//
-//        if (team != null) {
-//            //Use playerRegistry's method of adding player to team, more comprehensive than newTeam.addMember(player);
-//            playerRegistry.setPlayerToTeam(player, team);
-//            sendMessage(player, ChatColor.AQUA + "Welcome to the " + ChatColor.RESET + team.getDisplayName() + ChatColor.AQUA + " team");
-//        } else {
-//            sendError(player, "Sorry! We couldn't find any team named '" + teamName + "'. Maybe check your spelling and try again");
-//        }
-//    }
+    private class ListTeamsCommandHandler implements SubcommandHandler {
+        public boolean onSubcommand(Player player, String[] args) {
+            if (player != null && !player.hasPermission("dogfight.team.list")) {
+                sendError(player, "Sorry, how many teams " + ChatColor.ITALIC + " really " + ChatColor.RED + " exist shall remain a mystery to you.");
+                return true;
+            }
 
+            int teamCount = game.getPlayerRegistry().getTeams().size();
+            String teamsWord = teamCount == 1 ? " team:" : " teams:";
+            sendMessage(player, ChatColor.YELLOW + "This Dogfight game has " + teamCount + teamsWord);
+
+            for (Team listedTeam : game.getPlayerRegistry().getTeams()) {
+                sendMessage(player, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
+                        + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
+            }
+        }
+    }
 
 
     private void nameTeamCommand(CommandSender sender, String[] args, boolean createTeam) {
