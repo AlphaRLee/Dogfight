@@ -135,6 +135,7 @@ public class Dogfight extends JavaPlugin {
      * @author R Lee
      */
     private void setup() {
+        getServer().getLogger().info("------ TEST. New version of Dogfight loaded ------");// FIXME delete
         instance = this; //Instance reference to the only instance of the main plugin class
 
         //this.protocolManager = ProtocolLibrary.getProtocolManager(); //TODO: Re-enable once ProtocolLib for Spigot 1.12 is released

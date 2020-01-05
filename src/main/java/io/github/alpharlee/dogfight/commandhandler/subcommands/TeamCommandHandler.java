@@ -251,6 +251,8 @@ public class TeamCommandHandler implements SubcommandHandler {
                 sendMessage(player, false, ChatColor.YELLOW + "-" + ChatColor.RESET + listedTeam.getName()
                         + ChatColor.YELLOW + ", Display name: " + ChatColor.RESET + listedTeam.getDisplayName());
             }
+
+            return true;
         }
     }
 
